@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
-REPO_NAME=itrg-cli
-REPO_URL=url
+REPO_NAME=ITRG-CLI
+REPO_URL=https://github.com/ErikDombi/ITRG-CLI
 
 if ! command -v cli &> /dev/null
 then
@@ -12,8 +12,8 @@ fi
 echo "Starting install of ITRG CLI..."
 echo "Cloning repo..."
 cd ~
-#git clonee repo...
-cd REPO_NAME
+git clone $REPO_URL
+cd $REPO_NAME
 
 if ! command -v dotnet &> /dev/null
 then
@@ -45,3 +45,6 @@ echo "ITRG CLI installed!"
 echo "to modify servers list, use `cli servers`"
 echo "to modify projects list, use 'cli projects'"
 echo -e "\n# Add ITRG CLI to path\nexport PATH=/usr/local/share/itrg-cli/bin/:\$PATH\n" >> ~/.zshrc
+
+cd ~
+rm -rf $REPO_NAME
