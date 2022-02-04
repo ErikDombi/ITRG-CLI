@@ -26,7 +26,7 @@ fi
 
 echo "Starting build of ITRG CLI"
 cd CLI
-dotnet publish -c Release --self-contained true
+dotnet publish -c Release
 echo "Build completed"
 cd ..
 
