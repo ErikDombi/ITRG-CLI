@@ -32,7 +32,7 @@ cd ..
 
 echo "Setting up binary directory..."
 mkdir /usr/local/share/itrg-cli/
-cp ./bin/Release/net5.0/publish/*.* /usr/local/share/itrg-cli/
+cp ./CLI/bin/Release/net5.0/publish/*.* /usr/local/share/itrg-cli/
 mkdir /usr/local/share/itrg-cli/bin
 cp ./cli.sh /usr/local/share/itrg-cli/bin/cli
 chmod +x /usr/local/share/itrg-cli/bin/cli
@@ -42,10 +42,12 @@ mkdir /usr/local/share/itrg-cli/config/
 cp ./projects.json /usr/local/share/itrg-cli/config/projects.json
 cp ./servers.json /usr/local/share/itrg-cli/config/servers.json
 
-echo "ITRG CLI installed!"
-echo "to modify servers list, use `cli servers`"
-echo "to modify projects list, use 'cli projects'"
-echo -e "\n# Add ITRG CLI to path\nexport PATH=/usr/local/share/itrg-cli/bin/:\$PATH\n" >> ~/.zshrc
-
+echo "Cleaning up..."
 cd ~
 rm -rf $REPO_NAME
+
+echo -e "\nITRG CLI installed!"
+echo "Restart terminal for updated PATH"
+echo "to modify servers list, use \`cli servers\`"
+echo "to modify projects list, use \'cli projects\'"
+echo -e "\n# Add ITRG CLI to path\nexport PATH=/usr/local/share/itrg-cli/bin/:\$PATH" >> ~/.zshrc
