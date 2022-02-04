@@ -1,0 +1,39 @@
+{
+  "ReleaseProjects": [
+    {
+      "Name": "www",
+      "Directory": "~/InfoTech/www.infotech.com",
+      "Command": "rails s"
+    },
+    {
+      "Name": "mongoose",
+      "Directory": "~/InfoTech/mongoose",
+      "Command": "invoker start"
+    },
+    {
+      "Name": "Invoker",
+      "Directory": "~/InfoTech",
+      "Command": "invoker start"
+    }
+  ],
+  "DebugProjects": [
+    {
+      "Name": "www",
+      "Directory": "~/InfoTech/www.infotech.com",
+      "Command": "BYEBUGPORT=9191 RBENV_VERSION=$(cat '.ruby-version') rbenv exec bundle exec rails s -p 3000",
+      "DebugCommand": "BYEBUG -R 9191"
+    },
+    {
+      "Name": "mongoose",
+      "Directory": "~/InfoTech/mongoose",
+      "Command": "invoker start",
+      "DebugCommand": ""
+    },
+    {
+      "Name": "Invoker",
+      "Directory": "~/InfoTech",
+      "Command": "invoker start",
+      "DebugCommand": ""
+    }
+  ]
+}

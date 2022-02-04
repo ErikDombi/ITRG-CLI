@@ -1,0 +1,22 @@
+{
+  "Servers": [
+    {
+      "Name": "orange1"
+    },
+    {
+      "Name": "orange2"
+    },
+    {
+      "Name": "purple1"
+    },
+    {
+      "Name": "purple2"
+    },
+    {
+      "Name": "blueberry"
+    },
+    {
+      "Name": "qa"
+    }
+  ]
+}
