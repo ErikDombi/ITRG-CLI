@@ -28,6 +28,7 @@ echo "Starting build of ITRG CLI"
 cd CLI
 dotnet publish -c Release
 echo "Build completed"
+cd ..
 
 echo "Setting up binary directory..."
 mkdir /usr/local/share/itrg-cli/
