@@ -26,7 +26,7 @@ fi
 
 echo "Starting build of ITRG CLI"
 cd CLI
-dotnet publish -c Release
+dotnet publish -c Release --self-contained true
 echo "Build completed"
 cd ..
 
@@ -48,6 +48,6 @@ rm -rf $REPO_NAME
 
 echo -e "\nITRG CLI installed!"
 echo "Restart terminal for updated PATH"
-echo "to modify servers list, use \`cli servers\`"
-echo "to modify projects list, use \'cli projects\'"
+echo "to modify servers list, use 'cli servers'"
+echo "to modify projects list, use 'cli projects'"
 echo -e "\n# Add ITRG CLI to path\nexport PATH=/usr/local/share/itrg-cli/bin/:\$PATH" >> ~/.zshrc
