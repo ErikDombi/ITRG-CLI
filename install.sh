@@ -33,6 +33,7 @@ cd ..
 echo "Setting up binary directory..."
 mkdir /usr/local/share/itrg-cli/
 cp ./CLI/bin/Release/net5.0/publish/*.* /usr/local/share/itrg-cli/
+mv ./CLI/bin/Release/net5.0/publish/runtimes /usr/local/share/itrg-cli/runtimes/
 mkdir /usr/local/share/itrg-cli/bin
 cp ./cli.sh /usr/local/share/itrg-cli/bin/cli
 chmod +x /usr/local/share/itrg-cli/bin/cli
