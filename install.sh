@@ -3,7 +3,7 @@
 REPO_NAME=ITRG-CLI
 REPO_URL=https://github.com/ErikDombi/ITRG-CLI
 
-if ! command -v cli &> /dev/null
+if command -v cli &> /dev/null
 then
   echo "ERR: itrg-cli is already installed!"
   return 1
