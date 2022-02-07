@@ -8,49 +8,82 @@ using System.Diagnostics;
 using LibGit2Sharp;
 using System.Collections.Generic;
 using Spectre.Console.Rendering;
+using System.IO;
+using Spectre.Console.Cli;
 
 namespace CLI.Commands
 {
-    public class DeployCommand : ICommand
+    public class DeployCommand : Command<DeployCommand.Settings>, ICommand
     {
         readonly ProjectsConfiguration projectsConfiguration = new ProjectsConfiguration();
         readonly ServersConfiguration serversConfiguration = new ServersConfiguration();
+
+        string project_argument = null;
+        string branch_argument = null;
+        string server_argument = null;
+
+        public class Settings : CommandSettings
+        {
+            [CommandArgument(0, "[project]")]
+            public string Project { get; set; }
+
+            [CommandOption("-b|--branch")]
+            public string Branch { get; set; }
+
+            [CommandOption("-s|--server")]
+            public string Server { get; set; }
+        }
+
+        public override int Execute(CommandContext context, Settings settings)
+        {
+            project_argument = settings.Project;
+            branch_argument = settings.Branch;
+            server_argument = settings.Server;
+            Run();
+            return 0;
+        }
 
         public string Name => "deploy";
 
         public Task Run()
         {
-            var projectSelection = AnsiConsole.Prompt(
+            var projectSelection = project_argument ?? AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("[#ffb703]Select a project to deploy[/]")
-                    .AddChoices(projectsConfiguration.Data.ReleaseProjects.Select(proj => proj.Name))
-                    .HighlightStyle(Style.Parse("#219ebc bold"))
+                    .Title($"[{Program.Configuration.Palette.Secondary}]Select a project to deploy[/]")
+                    .AddChoices(projectsConfiguration.Data.ReleaseProjects.Where(t => t.Deployable).Select(proj => proj.Name))
+                    .HighlightStyle(Style.Parse(Program.Configuration.Palette.Highlight))
                 );
 
             Project project = projectsConfiguration.Data.ReleaseProjects.FirstOrDefault(proj => proj.Name == projectSelection);
 
-            Panel selectedProject = new Panel(new Markup($"[#FFB703 bold]Directory: [/][#8ECAE6]{project.Directory}[/]"))
+            var repo = new Repository(project.Directory);
+
+            string rubyFile = Path.Combine(project.Directory, ".ruby-version");
+            string rubyVersion = File.Exists(rubyFile) ? File.ReadAllText(rubyFile).Replace("\n", "") : null;
+            string rubyMarkup = rubyVersion != null ? $"\n[{Program.Configuration.Palette.Primary} bold]Ruby Version: [/][{Program.Configuration.Palette.Tertiary}]v{rubyVersion}[/]" : "";
+
+            Panel selectedProject = new Panel(new Markup($"[{Program.Configuration.Palette.Primary} bold]Directory: [/][{Program.Configuration.Palette.Tertiary}]{project.Directory}[/]\n[{Program.Configuration.Palette.Primary} bold]Active Branch: [/][{Program.Configuration.Palette.Tertiary}]{repo.Head.FriendlyName}[/]{rubyMarkup}"))
                 .RoundedBorder()
-                .BorderStyle(Style.Parse("#219EBC"))
+                .BorderStyle(Style.Parse(Program.Configuration.Palette.Secondary))
                 .Expand();
             selectedProject.Header = new PanelHeader($"| [white bold]{project.Name}[/] |", Justify.Left);
 
             AnsiConsole.Write(selectedProject);
             AnsiConsole.WriteLine();
 
-            var repo = new Repository(project.Directory);
+            
             List<Branch> branches = repo.Branches.Where(t => t.Reference.IsLocalBranch).OrderBy(t => t.TrackingDetails.AheadBy).Reverse().ToList();
             List<string> selectBranches = new List<string> { "[[Manually Enter]]", "" };
             selectBranches.AddRange(branches.Select(t => t.FriendlyName + (t.TrackedBranch != null ? " [green][[R]][/]" : " [red][[L]][/]")));
 
-            var branchSelection = AnsiConsole.Prompt(
+            var branchSelection = branch_argument ?? AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("[#ffb703]Select a branch to deploy[/]")
+                    .Title($"[{Program.Configuration.Palette.Secondary}]Select a branch to deploy[/]")
                     .AddChoices(selectBranches)
-                    .HighlightStyle(Style.Parse("#219ebc bold"))
+                    .HighlightStyle(Style.Parse(Program.Configuration.Palette.Highlight))
                 ).Split(" ")[0].Trim();
             if (branchSelection == "[[Manually") {
-                branchSelection = AnsiConsole.Ask<string>("[yellow]Enter branch name[/] [green bold]❯[/]");
+                branchSelection = AnsiConsole.Ask<string>($"[{Program.Configuration.Palette.Secondary}]Enter branch name[/] [{Program.Configuration.Palette.Primary} bold]❯[/]");
             }
 
             var branch = repo.Branches.FirstOrDefault(t => t.FriendlyName == branchSelection);
@@ -66,9 +99,9 @@ namespace CLI.Commands
                 return Task.CompletedTask;
             }
 
-            Panel selectedBranch = new Panel(new Markup($"[#FFB703 bold]Remote Name: [/][#8ECAE6]{branch.RemoteName}[/]"))
+            Panel selectedBranch = new Panel(new Markup($"[{Program.Configuration.Palette.Secondary} bold]Remote Name: [/][{Program.Configuration.Palette.Tertiary}]{branch.RemoteName}[/]"))
                 .RoundedBorder()
-                .BorderStyle(Style.Parse("#219EBC"))
+                .BorderStyle(Style.Parse(Program.Configuration.Palette.Secondary))
                 .Expand();
             selectedBranch.Header = new PanelHeader($"| [white bold]{branchSelection}[/] |", Justify.Left);
 
@@ -77,15 +110,18 @@ namespace CLI.Commands
 
             var servers = new List<string> { "[[Manually Enter]]", "" };
             servers.AddRange(serversConfiguration.Data.Servers.Select(t => t.Name));
-            var serverSelection = AnsiConsole.Prompt(
+            var serverSelection = server_argument ?? AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("[#ffb703]Select a server to deploy to[/]")
+                    .Title($"[{Program.Configuration.Palette.Secondary}]Select a server to deploy to[/]")
                     .AddChoices(servers)
-                    .HighlightStyle(Style.Parse("#219ebc bold"))
+                    .HighlightStyle(Style.Parse(Program.Configuration.Palette.Highlight))
                 );
 
             if (serverSelection == "[[Manually Enter]]")
-                serverSelection = AnsiConsole.Ask<string>("[yellow]Enter server name[/] [green bold]❯[/]");
+            {
+                serverSelection = AnsiConsole.Ask<string>($"[{Program.Configuration.Palette.Secondary}]Enter server name[/] [{Program.Configuration.Palette.Primary} bold]❯[/]");
+                AnsiConsole.WriteLine();
+            }
 
             if (string.IsNullOrWhiteSpace(serverSelection))
                 return Task.CompletedTask;

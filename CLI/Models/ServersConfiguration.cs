@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CLI.IO;
 using Newtonsoft.Json;
+using Spectre.Console;
 
 namespace CLI.Models
 {
@@ -9,7 +10,7 @@ namespace CLI.Models
     {
         public ServersConfiguration() : base("servers.json", (location) =>
         {
-            throw new Exception("servers.json file created. Please populate configuration and restart...");
+            AnsiConsole.MarkupLine("[yellow]servers.json file created using default values. `cli servers` to modify...[/]");
         })
         {
 
@@ -18,12 +19,14 @@ namespace CLI.Models
         public class Instance
         {
             [JsonProperty("Servers")]
-            public List<Server> Servers { get; set; }
+            public List<Server> Servers { get; set; } = new List<Server>() { new("orange1"), new("purple1") };
         }
     }
 
     public class Server
     {
+        public Server(string Name) { this.Name = Name; }
+
         public string Name { get; set; }
     }
 }

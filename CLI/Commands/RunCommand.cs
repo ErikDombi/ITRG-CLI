@@ -6,29 +6,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using CLI.Models;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace CLI.Commands
 {
-    public class RunCommand : ICommand
+    public class RunCommand : Command<RunCommand.Settings>, ICommand
     {
         readonly ProjectsConfiguration projectsConfiguration = new ProjectsConfiguration();
+
+        string project_argument = null;
+
+        public class Settings : CommandSettings
+        {
+            [CommandArgument(0, "[project]")]
+            public string Project { get; set; }
+        }
+
+        public override int Execute(CommandContext context, Settings settings)
+        {
+            project_argument = settings.Project;
+            Run();
+            return 0;
+        }
 
         public string Name => "run";
 
         public Task Run()
         {
-            var selection = AnsiConsole.Prompt(
+            var selection = project_argument ?? AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("[#ffb703]Select a project to run[/]")
+                    .Title($"[{Program.Configuration.Palette.Primary}]Select a project to run[/]")
                     .AddChoices(projectsConfiguration.Data.ReleaseProjects.Select(proj => proj.Name))
-                    .HighlightStyle(Style.Parse("#219ebc bold"))
+                    .HighlightStyle(Style.Parse(Program.Configuration.Palette.Highlight))
                 );
 
             Project project = projectsConfiguration.Data.ReleaseProjects.FirstOrDefault(proj => proj.Name == selection);
 
-            Panel selectedProject = new Panel(new Markup($"[#FFB703 bold]Command: [/][#8ECAE6]{project.Command}[/]\n[#FFB703 bold]Directory: [/][#8ECAE6]{project.Directory}[/]"))
+            Panel selectedProject = new Panel(new Markup($"[{Program.Configuration.Palette.Primary} bold]Command: [/][{Program.Configuration.Palette.Tertiary}]{project.Command}[/]\n[{Program.Configuration.Palette.Primary} bold]Directory: [/][{Program.Configuration.Palette.Tertiary}]{project.Directory}[/]"))
                 .RoundedBorder()
-                .BorderStyle(Style.Parse("#219EBC"))
+                .BorderStyle(Style.Parse(Program.Configuration.Palette.Secondary))
                 .Padding(2, 1);
             selectedProject.Header = new PanelHeader($"| [white bold]{project.Name}[/] |", Justify.Left);
 
@@ -73,7 +89,7 @@ namespace CLI.Commands
                 return Task.CompletedTask;
 
             AnsiConsole.WriteLine();
-            AnsiConsole.Write(new Rule($"[white bold]{project.Name}[/][grey50] ([underline]{project.Directory}[/])[/]").Centered().RuleStyle(Style.Parse("#FB8500")));
+            AnsiConsole.Write(new Rule($"[white bold]{project.Name}[/][grey50] ([underline]{project.Directory}[/])[/]").Centered().RuleStyle(Style.Parse(Program.Configuration.Palette.Primary)));
 
             var info = new ProcessStartInfo("/usr/bin/env", $"{project.Command}")
             {
@@ -82,7 +98,7 @@ namespace CLI.Commands
             };
             var proc = Process.Start(info);
             proc.WaitForExit();
-            AnsiConsole.Write(new Rule($"[white bold]{project.Name}[/] [grey50]exited with status code [bold {(proc.ExitCode == 0 ? "green" : "red")}]{proc.ExitCode}[/][/]").Centered().RuleStyle(Style.Parse("#FB8500")));
+            AnsiConsole.Write(new Rule($"[white bold]{project.Name}[/] [grey50]exited with status code [bold {(proc.ExitCode == 0 ? "green" : "red")}]{proc.ExitCode}[/][/]").Centered().RuleStyle(Style.Parse(Program.Configuration.Palette.Primary)));
 
             return Task.CompletedTask;
         }

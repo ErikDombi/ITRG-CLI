@@ -38,11 +38,6 @@ mkdir /usr/local/share/itrg-cli/bin
 cp ./cli.sh /usr/local/share/itrg-cli/bin/cli
 chmod +x /usr/local/share/itrg-cli/bin/cli
 
-echo "Creating configs..."
-mkdir /usr/local/share/itrg-cli/config/
-cp ./projects.json /usr/local/share/itrg-cli/config/projects.json
-cp ./servers.json /usr/local/share/itrg-cli/config/servers.json
-
 echo "Cleaning up..."
 cd ~
 rm -rf $REPO_NAME

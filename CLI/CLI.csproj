@@ -13,6 +13,7 @@
     <None Remove="Models\" />
     <None Remove="SimpleExec" />
     <None Remove="LibGit2Sharp" />
+    <None Remove="CLICommand\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -24,5 +25,6 @@
     <Folder Include="Commands\" />
     <Folder Include="IO\" />
     <Folder Include="Models\" />
+    <Folder Include="CLICommand\" />
   </ItemGroup>
 </Project>

@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 
 namespace CLI.Commands
 {
-    public class OtherCommand : ICommand
+    public class ExitCommand : ICommand
     {
-        public string Name => "other";
+        public string Name => "exit";
 
         public Task Run()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

@@ -37,7 +37,10 @@ namespace CLI.IO
                 onDirectoryInitiated?.Invoke(FILE_DIR);
             }
             else
+            {
                 Load();
+                Save(); // Restore new values
+            }
         }
 
         private string FileContent
@@ -56,7 +59,11 @@ namespace CLI.IO
         {
             get
             {
-                return JsonConvert.DeserializeObject<T>(FileContent);
+                return JsonConvert.DeserializeObject<T>(FileContent, new JsonSerializerSettings()
+                {
+                    DefaultValueHandling = DefaultValueHandling.Populate,
+                    ObjectCreationHandling = ObjectCreationHandling.Replace
+                });
             }
             set
             {
