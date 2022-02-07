@@ -39,4 +39,4 @@ then
   return 0
 fi
 
-dotnet /usr/local/share/itrg-cli/CLI.dll
+dotnet /usr/local/share/itrg-cli/CLI.dll $1 $2 $3 $4 $5 $6
