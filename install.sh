@@ -42,8 +42,8 @@ echo "Cleaning up..."
 cd ~
 rm -rf $REPO_NAME
 
+echo "Adding to path..."
+echo -e "\n# Add ITRG CLI to path\nexport PATH=/usr/local/share/itrg-cli/bin/:\$PATH" >> ~/.zshrc
+
 echo -e "\nITRG CLI installed!"
 echo "Restart terminal for updated PATH"
-echo "to modify servers list, use 'cli servers'"
-echo "to modify projects list, use 'cli projects'"
-echo -e "\n# Add ITRG CLI to path\nexport PATH=/usr/local/share/itrg-cli/bin/:\$PATH" >> ~/.zshrc

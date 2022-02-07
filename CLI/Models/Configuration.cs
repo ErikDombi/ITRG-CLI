@@ -26,7 +26,7 @@ namespace CLI.Models
         {
             public string Primary { get; set; } = "#56B6C2";
 
-            public string Secondary { get; set; } = "#56B6C2";
+            public string Secondary { get; set; } = "#C678DD";
 
             public string Tertiary { get; set; } = "#98C379";
 
