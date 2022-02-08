@@ -14,9 +14,13 @@ zsh <(curl https://raw.githubusercontent.com/ErikDombi/ITRG-CLI/main/install.sh)
 
 `cli config` - open VS Code to modify general configuration
 
-`cli servers` - open VS Code to modify servers configuration
-
 `cli -h` - Application specific command help
+
+## Updating
+To update ITRG-CLI, run the following command in a terminal
+```sh
+cli update
+```
 
 ## Removal
 To uninstall ITRG-CLI, run the following command in a terminal
