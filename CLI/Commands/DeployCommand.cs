@@ -72,7 +72,7 @@ namespace CLI.Commands
             AnsiConsole.WriteLine();
 
             
-            List<Branch> branches = repo.Branches.Where(t => t.Reference.IsLocalBranch).OrderBy(t => t.TrackingDetails.AheadBy).Reverse().ToList();
+            List<Branch> branches = repo.Branches.Where(t => t.Reference.IsLocalBranch).OrderBy(t => t.Commits.FirstOrDefault().Author.When).Reverse().ToList();
             List<string> selectBranches = new List<string> { "[[Manually Enter]]", "" };
             selectBranches.AddRange(branches.Select(t => t.FriendlyName + (t.TrackedBranch != null ? " [green][[R]][/]" : " [red][[L]][/]")));
 
